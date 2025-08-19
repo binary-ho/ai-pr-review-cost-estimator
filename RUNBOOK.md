@@ -27,6 +27,10 @@ Flags:
 - `--out` (required): Path to write the HTML report.
 - `--github-token` (optional): Token via flag; if omitted, the tool reads `GITHUB_TOKEN` from the environment.
 - `--since` / `--until` (optional): Analysis window (YYYY-MM-DD). If omitted, analyzes all available history.
+- Model/Pricing options:
+  - `--encoding-model` (default gpt-4o): tiktoken encoding model name. e.g., gpt-4.1, gpt-4o, gpt-5, o200k_base, cl100k_base.
+  - `--pricing "Name:USD_per_M"` (repeatable): Add as many pricing rows as you want; cost per 1M input tokens. e.g., `--pricing "GPT-5:5.5" --pricing "Sonnet 4:3.2" --pricing "Opus:2.0"`.
+  - If omitted, defaults to GPT-4o ($5/M) and Claude 3.5 Sonnet ($3/M).
 - Advanced (eventual-complete mode):
   - `--eventual-complete` (default false): When hitting rate limits, wait until reset and retry the same request to eventually complete, rather than skipping.
   - `--max-wait-reset` (default 60m): Cap on a single wait for rate reset (e.g., 30m, 60m, 2h). Empty string means no cap.
@@ -65,6 +69,17 @@ GITHUB_TOKEN=xxxx ./pr-agent-cost-estimator --org my-company --out report.html
 Windowed analysis:
 ```
 GITHUB_TOKEN=xxxx ./pr-agent-cost-estimator --org my-company --out out/report-2024H2.html --since 2024-07-01 --until 2024-12-31
+```
+Latest models cost comparison (unlimited entries):
+```
+GITHUB_TOKEN=xxxx \
+./pr-agent-cost-estimator \
+  --org my-company \
+  --out out/report-latest.html \
+  --encoding-model gpt-4.1 \
+  --pricing "GPT-5:5.50" \
+  --pricing "Sonnet 4:3.20" \
+  --pricing "Opus:2.00"
 ```
 
 ## Notes
